@@ -15,6 +15,7 @@ namespace DungeonCrawler
         public int Health { get; set; }
         public List<Round> Rounds;
 
+
         public void SetRounds(List<Round> rounds)
         {
             Rounds = rounds;
@@ -23,8 +24,9 @@ namespace DungeonCrawler
         public Hero()
         {
             var name = ConsoleHelper.GetInput("Unesite ime heroja:");
-            var healthPoints = ConsoleHelper.GetNumber("Unesite HP, enter za default:");
-            var damage = ConsoleHelper.GetNumber("Unesite damage, enter za default:");
+            Name = name;
+            var healthPoints = ConsoleHelper.GetNumber($"Unesite HP, enter za default:");
+            var damage = ConsoleHelper.GetNumber($"Unesite damage, enter za default:");
             if (!healthPoints.isDefault) HealthPoints = healthPoints.number;
             if (!damage.isDefault) Damage = damage.number;
         }
@@ -33,9 +35,22 @@ namespace DungeonCrawler
             return Damage;
         }
 
-        public virtual void Info()
+
+        public override string ToString()
         {
-            Console.WriteLine($"--HERO -- Health: {Health}, HP: {HealthPoints}, Damage: {Damage}, XP: {Experience}, Level: {Level}");
+            ConsoleHelper.ColorWord($"--{Name.ToUpper()}--", ConsoleColor.DarkGray);
+            ConsoleHelper.ColorWord($" Zdravlje: ", ConsoleColor.DarkGreen);
+            Console.Write(Health);
+            ConsoleHelper.ColorWord($" HP: ", ConsoleColor.DarkGreen);
+            Console.Write(HealthPoints);
+            ConsoleHelper.ColorWord($" Damage: ", ConsoleColor.DarkRed);
+            Console.Write(Damage);
+            ConsoleHelper.ColorWord($" XP: ", ConsoleColor.DarkCyan);
+            Console.Write(Experience);
+            ConsoleHelper.ColorWord($" Level: ", ConsoleColor.DarkCyan);
+            Console.Write(Level);
+            Console.WriteLine("");
+            return "";
         }
 
         public bool Suffer(int damageSuffered)
@@ -46,7 +61,6 @@ namespace DungeonCrawler
         }
         public virtual bool Die()
         {
-            Console.WriteLine("Igrač umro!");
             return false;
         }
         public void Win()
@@ -55,30 +69,33 @@ namespace DungeonCrawler
 
         }
 
-        public virtual ActionType  GetAction()
+        public virtual (ActionType action, bool doesQuit) GetAction()
         {
-            var actionInput = ConsoleHelper.CapitalizeWord(ConsoleHelper.GetInput("Odaberite napad (Direct, Side, Counter):").ToLower());
+            var input = ConsoleHelper.GetInputOrQuit("Odaberite napad (Direct, Side, Counter):");
+            if (input.doesQuit) return (0, true);
+
+            var actionInput = ConsoleHelper.CapitalizeWord(input.input.ToLower());
             var success = Enum.TryParse(typeof(ActionType), actionInput, out object action);
             if (!success)
             {
-                Console.WriteLine("Odabir nije ispravan!");
+                ConsoleHelper.ColorText("Odabir nije ispravan!", ConsoleColor.Yellow);
                 return GetAction();
             }
-            return (ActionType)action;
+            return ((ActionType)action, false);
         }
 
         private void LevelUp()
         {
-            Console.WriteLine("Level up!");
+            ConsoleHelper.ColorText("Level up!", ConsoleColor.White, ConsoleColor.DarkGreen);
             Level++;
-            HealthPoints += 2;
-            Damage += 1;
+            HealthPoints += 10;
+            Damage = (int)(Damage*1.3);
         }
         public virtual void Win (int experienceUp)
         {
             Console.WriteLine("Pobjeda runde!");
             Experience += experienceUp;
-            if (ConsoleHelper.ConfirmAction($"Želite li utrošiti {Experience / 2} XP za obnovu zdravlja?"))
+            if (ConsoleHelper.ConfirmAction($"Želite li utrošiti {Experience / 2} XP za obnovu zdravlja? [XP: {Experience}, Zdravlje: {Health}/{HealthPoints}]"))
             {
                 Experience -= Experience / 2;
                 Health = HealthPoints;

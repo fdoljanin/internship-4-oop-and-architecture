@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using ConsoleColor = System.ConsoleColor;
 
 namespace DungeonCrawler
 {
@@ -18,9 +19,12 @@ namespace DungeonCrawler
             Health = HealthPoints;
         }
 
-        public override void Info()
+        public override string ToString()
         {
-            Console.WriteLine($"--HERO -- Health: {Health}, HP: {HealthPoints}, Damage: {Damage}, Mana: {Mana} XP: {Experience}, Level: {Level}");
+            ConsoleHelper.ColorWord("[Mana: ", ConsoleColor.DarkYellow);
+            Console.Write($"{Mana}/{ManaPoints}");
+            ConsoleHelper.ColorWord("] ", ConsoleColor.DarkYellow);
+            return base.ToString();
         }
 
         public override int Attack()
@@ -54,41 +58,43 @@ namespace DungeonCrawler
             return false;
         }
 
-        public override  ActionType GetAction()
+        public override (ActionType action, bool doesQuit) GetAction()
         {
-            var input = ConsoleHelper.GetInput("Odaberite napad (Direct, Side, Counter); broj za manu, odvojen razmakom:").Split(" ").ToList();
+            var userInput = ConsoleHelper.GetInputOrQuit("Odaberite napad (Direct, Side, Counter):");
+            if (userInput.doesQuit) return (0, true);
+            var input = userInput.input.Split(" ").ToList();
             var actionInput = ConsoleHelper.CapitalizeWord(input[0].ToLower());
             var success = Enum.TryParse(typeof(ActionType), actionInput, out object action);
             if (!success)
             {
-                Console.WriteLine("Odabir napada nije ispravan!");
+                ConsoleHelper.ColorText("Odabir napada nije ispravan!", ConsoleColor.Yellow);
                 return GetAction();
             }
             _manaUsage = (false, -1);
-            if (success && input.Count == 1) return (ActionType)action;
+            if (success && input.Count == 1) return ((ActionType)action, false);
             if (input.Count == 2)
             {
                 int mana;
                 var successInt = int.TryParse(input[1], out mana);
                 if (!successInt)
                 {
-                    Console.WriteLine("Mana mora biti broj!");
+                    ConsoleHelper.ColorText("Mana mora biti broj!", ConsoleColor.Yellow);
                     return GetAction();
                 }
                 if (mana <= 0)
                 {
-                    Console.WriteLine("Mana mora biti veća od 0!");
+                    ConsoleHelper.ColorText("Mana mora biti veća od 0!", ConsoleColor.Yellow);
                     return GetAction();
                 }
                 if (mana > Mana)
                 {
-                    Console.WriteLine("Tolika količina mane nije dostupna!");
+                    ConsoleHelper.ColorText("Tolika količina mane nije dostupna!", ConsoleColor.Yellow);
                     return GetAction();
                 }
                 _manaUsage = (true, mana);
-                return (ActionType)action;
+                return ((ActionType)action, false);
             }
-            Console.WriteLine("Unos argumenata neispravan!");
+            ConsoleHelper.ColorText("Unos argumenata neispravan!", ConsoleColor.Yellow);
             return GetAction();
         }
     }

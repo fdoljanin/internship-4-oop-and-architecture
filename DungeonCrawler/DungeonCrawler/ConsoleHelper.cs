@@ -7,13 +7,29 @@ namespace DungeonCrawler
     public static class ConsoleHelper
     {
         public static Random RandomSeed { get; set; } = new Random();
+
+        public static void ColorText(string message, ConsoleColor foregroundColor, ConsoleColor backgroundColor = ConsoleColor.Black)
+        {
+            Console.ForegroundColor = foregroundColor;
+            Console.BackgroundColor = backgroundColor;
+            Console.WriteLine(message);
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
+        public static void ColorWord(string word, ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+            Console.Write(word);
+            Console.ForegroundColor = ConsoleColor.White;
+        }
         public static string GetInput(string message)
         {
             Console.WriteLine(message);
             var input = Console.ReadLine().Trim();
             if (input == "")
             {
-                Console.WriteLine("Unos ne može biti prazan!");
+                ColorText("Unos ne može biti prazan!", ConsoleColor.Yellow);
                 return GetInput(message);
             }
             return input;
@@ -28,12 +44,12 @@ namespace DungeonCrawler
             var success = int.TryParse(inputString, out number);
             if (!success)
             {
-                Console.WriteLine("Unos mora biti broj!");
+                ColorText("Unos mora biti broj!", ConsoleColor.Yellow);
                 return GetNumber(message);
             }
             if (number <= 0)
             {
-                Console.WriteLine("Unos mora biti veći od 0!");
+                ColorText("Unos mora biti veći od 0!", ConsoleColor.Yellow);
                 return GetNumber(message);
             }
             return (number, false);
@@ -49,15 +65,26 @@ namespace DungeonCrawler
 
         public static bool ConfirmAction(string message)
         {
-            Console.WriteLine(message);
+            ColorText(message, ConsoleColor.Magenta);
             var input = Console.ReadLine().Trim().ToLower();
             if (input == "da") return true;
             if (input == "ne") return false;
             else
             {
-                Console.WriteLine("Neispravan odabir!");
+                ColorText("Neispravan odabir!", ConsoleColor.Yellow);
                 return ConfirmAction(message);
             }
+        }
+
+        public static (bool doesQuit, string input) GetInputOrQuit(string message)
+        {
+            var input = GetInput(message);
+            if (input == "quit")
+            {
+                if (!ConfirmAction("Jeste li sigurni da želite odustati?")) return GetInputOrQuit(message);
+                return (true, "");
+            }
+            return (false, input);
         }
 
         

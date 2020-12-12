@@ -19,12 +19,18 @@ namespace DungeonCrawler
         {
             Rounds = rounds;
         }
-        
 
-        public void Info()
+        public override string ToString()
         {
-            Console.WriteLine($"-- {Name} -- Health: {Health}, Damage: {Damage}");
+            ConsoleHelper.ColorWord($"--{Name.ToUpper()}--", ConsoleColor.DarkGray);
+            ConsoleHelper.ColorWord($" Zdravlje: ", ConsoleColor.DarkGreen);
+            Console.Write(Health);
+            ConsoleHelper.ColorWord($" Damage: ", ConsoleColor.DarkRed);
+            Console.Write(Damage);
+            Console.WriteLine("");
+            return "";
         }
+    
 
         public virtual int Attack()
         {
@@ -45,7 +51,6 @@ namespace DungeonCrawler
 
         public virtual bool Die()
         {
-            Console.WriteLine("I died...");
             return false;
         }
 

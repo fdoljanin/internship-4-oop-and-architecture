@@ -25,33 +25,33 @@ namespace DungeonCrawler
             return Damage;
         }
 
-        public override  ActionType GetAction()
+        public override (ActionType action, bool doesQuit) GetAction()
         {
-            var input = ConsoleHelper.GetInput("Odaberite napad (Direct, Side, Counter); 'bijes' za napad iz bijesa, odvojen razmakom:").Split(" ").ToList();
+            var userInput = ConsoleHelper.GetInputOrQuit("Odaberite napad (Direct, Side, Counter):");
+            if (userInput.doesQuit) return (0, true);
+            var input = userInput.input.Split(" ").ToList();
             var actionInput = ConsoleHelper.CapitalizeWord(input[0].ToLower());
             var success = Enum.TryParse(typeof(ActionType), actionInput, out object action);
             if (!success)
             {
-                Console.WriteLine("Odabir napada nije ispravan!");
+                ConsoleHelper.ColorText("Odabir napada nije ispravan!", ConsoleColor.Yellow);
                 return GetAction();
             }
             _isAttackFurious = false;
-            if (success && input.Count == 1) return (ActionType)action;
+            if (success && input.Count == 1) return ((ActionType)action, false);
             if (input.Count==2 && input[1] == "bijes")
             {
                 if (Health<=HealthPoints*0.2)
                 {
-                    Console.WriteLine("Health nije veći od 20% HP; napad iz bijesa nije moguć.");
+                    ConsoleHelper.ColorText("Health nije veći od 20% HP; napad iz bijesa nije moguć.", ConsoleColor.Yellow);
                     return GetAction();
                 }
-                else
-                {
-                    _isAttackFurious = true;
-                    return (ActionType)action;
-                }
+                
+                _isAttackFurious = true;
+                return ((ActionType) action, false);
             }
             
-            Console.WriteLine("Unos argumenata neispravan!");
+            ConsoleHelper.ColorText("Unos argumenata neispravan!", ConsoleColor.Yellow);
             return GetAction();
 
         }

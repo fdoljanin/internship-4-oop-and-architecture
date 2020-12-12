@@ -12,7 +12,7 @@ namespace DungeonCrawler
             var success = Enum.TryParse(typeof(HeroType), input, out object hero);
             if (!success)
             {
-                Console.WriteLine("Odabir nije ispravan!");
+                ConsoleHelper.ColorText("Odabir nije ispravan!", ConsoleColor.Yellow);
                 return GetHeroType(message);
             }
             return (HeroType)hero;
@@ -24,9 +24,7 @@ namespace DungeonCrawler
         }
         public Game()
         {
-            var welcome = @"--- DUNGEON CRAWL ---
-Unesite quit za izlaz!";
-            Console.WriteLine(welcome);
+            ConsoleHelper.ColorText("——— DUNGEON CRAWL ———", ConsoleColor.White, ConsoleColor.DarkBlue);
             var heroType = GetHeroType("Unesite tip heroja (Warrior/Mage/Ranger)");
             Hero hero = null;
             Goblin monster = new Goblin();
@@ -44,15 +42,17 @@ Unesite quit za izlaz!";
                 default:
                     break;
             }
+            Console.WriteLine("Za izlaz tijekom igre unesite quit");
             var rounds = new List<Round>();
             for (var i = 0; i < 5; ++i) rounds.Add(new Round(hero));
             while (rounds.Count > 0)
             {
-                Console.WriteLine("PREOSTALO RUNDI: " + rounds.Count);
+                ConsoleHelper.ColorText("PREOSTALO RUNDI: " + rounds.Count, ConsoleColor.White, ConsoleColor.DarkCyan);
                 rounds[0].Play(rounds);
-                if (!rounds[0].DidWin())
+                if (!rounds[0].DidWinOrQuit().didWin || rounds[0].DidWinOrQuit().didQuit)
                 {
-                    Console.WriteLine("Game over!");
+                    if (!rounds[0].DidWinOrQuit().didWin) ConsoleHelper.ColorText("Game over!", ConsoleColor.White, ConsoleColor.DarkRed);
+                    if (rounds[0].DidWinOrQuit().didQuit) Console.WriteLine("Odustali ste...", ConsoleColor.White, ConsoleColor.DarkMagenta);
                     if (ConsoleHelper.ConfirmAction("Pokrenuti novu igru?"))
                     {
                         Console.Clear();
@@ -63,7 +63,7 @@ Unesite quit za izlaz!";
                 rounds.RemoveAt(0);
             }
 
-            Console.WriteLine("Bravo, pobjeda!");
+            ConsoleHelper.ColorText("Bravo, pobjeda!", ConsoleColor.White, ConsoleColor.DarkGreen);
         }
 
     }
