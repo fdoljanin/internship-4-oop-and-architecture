@@ -13,8 +13,8 @@ namespace DungeonCrawler
         private bool _hasDied = false;
         public Mage() : base()
         {
-            if (HealthPoints == 0) HealthPoints = 8;
-            if (Damage == 0) Damage = 4;
+            if (HealthPoints == 0) HealthPoints = 55;
+            if (Damage == 0) Damage = 25;
             Health = HealthPoints;
         }
 

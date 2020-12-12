@@ -10,9 +10,15 @@ namespace DungeonCrawler
         public int Level { get; set; }
         public int HealthPoints { get; set; }
         public int Experience { get; set; }
-        public int ExperienceLevelUp { get; set; }
+        public int ExperienceLevelUp { get; set; } = 35;
         public int Damage { get; set; }
         public int Health { get; set; }
+        public List<Round> Rounds;
+
+        public void SetRounds(List<Round> rounds)
+        {
+            Rounds = rounds;
+        }
 
         public Hero()
         {
@@ -45,7 +51,7 @@ namespace DungeonCrawler
         }
         public void Win()
         {
-            Console.WriteLine("Bravo, pobjeda!");
+            Console.WriteLine("Pobjeda runde!");
 
         }
 
@@ -70,14 +76,19 @@ namespace DungeonCrawler
         }
         public virtual void Win (int experienceUp)
         {
-            Console.WriteLine("Pobjeda");
+            Console.WriteLine("Pobjeda runde!");
             Experience += experienceUp;
+            if (ConsoleHelper.ConfirmAction($"Želite li utrošiti {Experience / 2} XP za obnovu zdravlja?"))
+            {
+                Experience -= Experience / 2;
+                Health = HealthPoints;
+            }
             if (Experience >= ExperienceLevelUp)
             {
                 Experience -= ExperienceLevelUp;
                 LevelUp();
             }
-            Health = (Health + (int)(HealthPoints * 0.25) > HealthPoints) ? HealthPoints : Health + (int)(HealthPoints * 0.25); 
+            Health = (Health + (int)(HealthPoints * 0.25) > HealthPoints) ? HealthPoints : Health + (int)(HealthPoints * 0.25);
         }
     }
 }

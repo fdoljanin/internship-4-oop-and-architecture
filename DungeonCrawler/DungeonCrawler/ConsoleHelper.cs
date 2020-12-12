@@ -6,6 +6,7 @@ namespace DungeonCrawler
 {
     public static class ConsoleHelper
     {
+        public static Random RandomSeed { get; set; } = new Random();
         public static string GetInput(string message)
         {
             Console.WriteLine(message);
@@ -44,6 +45,19 @@ namespace DungeonCrawler
             if (word.Length > 1)
                 return char.ToUpper(word[0]) + word.Substring(1);
             else return "";
+        }
+
+        public static bool ConfirmAction(string message)
+        {
+            Console.WriteLine(message);
+            var input = Console.ReadLine().Trim().ToLower();
+            if (input == "da") return true;
+            if (input == "ne") return false;
+            else
+            {
+                Console.WriteLine("Neispravan odabir!");
+                return ConfirmAction(message);
+            }
         }
 
         

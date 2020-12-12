@@ -9,8 +9,8 @@ namespace DungeonCrawler
     {
         public Warrior():base()
         {
-            if (HealthPoints==0) HealthPoints = 12;
-            if (Damage==0) Damage = 2;
+            if (HealthPoints==0) HealthPoints = 80;
+            if (Damage==0) Damage = 15;
             Health = HealthPoints;
         }
 
@@ -20,7 +20,7 @@ namespace DungeonCrawler
             if (_isAttackFurious)
             {
                 Health -= (int) (0.25 * HealthPoints);
-                return Damage *= 2;
+                return Damage * 2;
             }
             return Damage;
         }
@@ -53,6 +53,7 @@ namespace DungeonCrawler
             
             Console.WriteLine("Unos argumenata neispravan!");
             return GetAction();
+
         }
     }
 }

@@ -9,41 +9,44 @@ namespace DungeonCrawler
         public int HealthPoints { get; set; }
         public int Health { get; set; }
         public int Damage { get; set; }
-        public int ExperienceDefined { get; set; } = 10;
-        public Monster()
+        public string Name { get; set; }
+        public int ExperienceDefined { get; set; }
+
+        public List<Round> Rounds;
+        private Random _rand = new Random();
+
+        public void SetRounds(List<Round> rounds)
         {
-            HealthPoints = 9;
-            Health = HealthPoints;
-            Damage = 3;
+            Rounds = rounds;
         }
+        
 
         public void Info()
         {
-            Console.WriteLine($"-- MONSTER -- Health: {Health}, Damage: {Damage}");
+            Console.WriteLine($"-- {Name} -- Health: {Health}, Damage: {Damage}");
         }
 
-        public int Attack()
+        public virtual int Attack()
         {
             return Damage;
         }
 
         public ActionType Action()
         {
-            var rand = new Random();
-            return (ActionType)rand.Next(0, 3);
+            return (ActionType) _rand.Next(0, 3);
         }
 
         public bool Suffer(int damage)
         {
             Health -= damage;
-            if (Health <= 0) return false;
+            if (Health <= 0) return Die();
             return true;
         }
 
-        public void Die()
+        public virtual bool Die()
         {
             Console.WriteLine("I died...");
-            
+            return false;
         }
 
         public int GetExperience()

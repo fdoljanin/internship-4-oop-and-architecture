@@ -10,9 +10,10 @@ namespace DungeonCrawler
     }
     class Round
     {
-        Monster Monster;
-        Hero Hero;
+        public Monster Monster;
+        public Hero Hero;
         bool _continue = true;
+        bool _autoWon = false;
         public Round(Hero inHero)
         {
             Hero = inHero;
@@ -34,8 +35,21 @@ namespace DungeonCrawler
             }
 
         }
-        public void Play()
+
+        public void AutoWin()
         {
+            _autoWon = true;
+        }
+        public void Play(List <Round> rounds)
+        {
+            if (_autoWon)
+            {
+                Console.WriteLine("Runda automatski osvojena...");
+                Hero.Win(Monster.GetExperience());
+                return;
+            }
+            Hero.SetRounds(rounds);
+            Monster.SetRounds(rounds);
             Console.WriteLine("NOVA RUNDA! \n \n");
             while (true)
             {
