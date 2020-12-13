@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DungeonCrawler.Data.Abstractions
 {
-    public interface IEntityInfo
+    public interface IEntityInfo //0th is Hero, others Monster
     {
         int Health { get; set; }
         int HealthPoints { get; set; }
