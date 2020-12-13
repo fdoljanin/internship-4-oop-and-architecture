@@ -17,7 +17,7 @@ namespace DungeonCrawler.Data.Models.Heroes
         int _stunChance { get; set; } = 5;
         public override int Attack()
         {
-            if (Rand.Next(0, 100) < _stunChance && Storage.EntityList.Count>=2) Storage.EntityList[2].Health = 0;
+            if (Rand.Next(0, 100) < _stunChance && Storage.EntityList.Count>2) Storage.EntityList[2].Health = 0;
             if (Rand.Next(0, 100) < _criticalChance)
             {
                 Console.WriteLine("Double damage!");
