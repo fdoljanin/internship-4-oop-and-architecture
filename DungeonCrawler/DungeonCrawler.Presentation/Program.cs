@@ -1,4 +1,5 @@
 ﻿using System;
+using DungeonCrawler.Domain.Helpers;
 using DungeonCrawler.Domain.Services;
 namespace DungeonCrawler.Presentation
 {
@@ -7,6 +8,8 @@ namespace DungeonCrawler.Presentation
         static void Main(string[] args)
         {
             new Game();
+            Console.Clear();
+            ConsoleHelper.ColorText("Gašenje...", ConsoleColor.White, ConsoleColor.DarkBlue);
         }
     }
 }

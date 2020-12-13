@@ -6,7 +6,7 @@ namespace DungeonCrawler.Data.Models.Monsters
 {
     public class Goblin:Monster
     {
-        public Goblin() : base()
+        public Goblin()
         {
             Name = "Goblin";
             ExperienceDefined = 10;

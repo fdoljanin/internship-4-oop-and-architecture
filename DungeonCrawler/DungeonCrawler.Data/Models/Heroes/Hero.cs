@@ -11,36 +11,37 @@ namespace DungeonCrawler.Data.Models.Heroes
         public int Level { get; set; }
         public int HealthPoints { get; set; }
         public int Experience { get; set; }
-        public int ExperienceLevelUp { get; set; } = 35;
+        private int _experienceLevelUp = 35;
         public int Damage { get; set; }
         public int Health { get; set; }
+        protected Random Rand = new Random();
 
-        public Hero()
+        protected Hero()
         {
             Storage.EntityList.Add(this);
         }
+
         public virtual int Attack()
         {
             return Damage;
         }
-
 
         public override string ToString()
         {
             return Name.ToUpper();
         }
 
-        public bool Suffer(int damageSuffered)
+        public bool SurviveSuffer(int damageSuffered)
         {
             Health -= damageSuffered;
             if (Health <= 0) return  Die();
             return true;
         }
-        public virtual bool Die()
+
+        protected virtual bool Die()
         {
             return false;
         }
-
 
         private void LevelUp()
         {
@@ -48,6 +49,7 @@ namespace DungeonCrawler.Data.Models.Heroes
             HealthPoints += 10;
             Damage = (int)(Damage*1.3);
         }
+
         public bool WinCheckLevelUp(bool doesRegenerate)
         {
             Health = (Health + (int)(HealthPoints * 0.25) > HealthPoints) ? HealthPoints : Health + (int)(HealthPoints * 0.25);
@@ -56,8 +58,8 @@ namespace DungeonCrawler.Data.Models.Heroes
                 Experience -= Experience / 2;
                 Health = HealthPoints;
             }
-            if (Experience < ExperienceLevelUp) return false;
-            Experience -= ExperienceLevelUp;
+            if (Experience < _experienceLevelUp) return false;
+            Experience -= _experienceLevelUp;
             LevelUp();
             return true;
         }

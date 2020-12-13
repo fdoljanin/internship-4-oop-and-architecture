@@ -12,11 +12,11 @@ namespace DungeonCrawler.Data.Models.Monsters
         public int Health { get; set; }
         public int Damage { get; set; }
         public string Name { get; set; }
-        public int ExperienceDefined { get; set; }
+        protected int ExperienceDefined { get; set; }
 
-        private Random _rand = new Random();
+        protected Random Rand = new Random();
 
-        public Monster()
+        protected Monster()
         {
             Storage.EntityList.Add(this);
         }
@@ -34,20 +34,16 @@ namespace DungeonCrawler.Data.Models.Monsters
 
         public ActionType Action()
         {
-            return (ActionType) _rand.Next(0, 3);
+            return (ActionType) Rand.Next(0, 3);
         }
 
-        public bool Suffer(int damage)
+        public bool SurviveSuffer(int damage)
         {
             Health -= damage;
-            if (Health <= 0) return Die();
+            if (Health <= 0) return false;
             return true;
         }
 
-        public virtual bool Die()
-        {
-            return false;
-        }
 
         public int GetExperience()
         {

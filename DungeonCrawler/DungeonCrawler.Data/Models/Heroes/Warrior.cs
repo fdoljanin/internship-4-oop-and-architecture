@@ -7,7 +7,7 @@ namespace DungeonCrawler.Data.Models.Heroes
 {
     public class Warrior : Hero
     {
-        public Warrior() : base()
+        public Warrior()
         {
             HealthPoints = 80;
             Damage = 15;

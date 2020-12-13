@@ -8,11 +8,11 @@ namespace DungeonCrawler.Data.Models.Heroes
 {
     public class Mage : Hero
     {
-        public int ManaPoints { get; set; } = 5;
-        public int Mana { get; set; } = 5;
+        public int ManaPoints { get; set; } = 15;
+        public int Mana { get; set; } = 15;
         public (bool isManaUsed, int quantity) ManaUsage;
         private bool _hasDied = false;
-        public Mage() : base()
+        public Mage()
         {
             HealthPoints = 55;
             Damage = 25;
@@ -25,8 +25,8 @@ namespace DungeonCrawler.Data.Models.Heroes
             {
                 if(Health+ManaUsage.quantity>HealthPoints)
                 {
-                    Health = HealthPoints;
                     Mana -= HealthPoints - Health;
+                    Health = HealthPoints;
                 } else
                 {
                     Health += ManaUsage.quantity;
@@ -37,16 +37,13 @@ namespace DungeonCrawler.Data.Models.Heroes
             return Damage;
         }
 
-        public override bool Die()
+        protected override bool Die()
         {
-            if (!_hasDied)
-            {
-                _hasDied = true;
-                Health = HealthPoints;
-                Mana = ManaPoints;
-                return true;
-            }
-            return false;
+            if (_hasDied) return false;
+            _hasDied = true;
+            Health = HealthPoints;
+            Mana = ManaPoints;
+            return true;
         }
 
         

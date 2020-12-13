@@ -13,103 +13,77 @@ namespace DungeonCrawler.Domain.Helpers
         {
             var name = ConsoleHelper.GetInput("Unesite ime heroja:");
             hero.Name = name;
-            var healthPoints = ConsoleHelper.GetNumber($"Unesite HP, enter za default:");
-            var damage = ConsoleHelper.GetNumber($"Unesite damage, enter za default:");
+            var healthPoints = ConsoleHelper.GetNumber($"Unesite HP, enter za default ({hero.HealthPoints}):");
+            var damage = ConsoleHelper.GetNumber($"Unesite damage, enter za default: ({hero.Damage})");
             if (!healthPoints.isDefault) hero.HealthPoints = healthPoints.number;
             if (!damage.isDefault) hero.Damage = damage.number;
         }
 
         public static (ActionType action, bool doesQuit) GetAction(Hero hero)
         {
-            if (hero is Warrior warrior) return GetWarriorAction(warrior);
-            if (hero is Mage mage) return GetMageAction(mage);
-            return GetRangerAction();
-        }
+            var message = "Odaberite napad(Direct, Side, Counter)";
+            if (hero is Warrior) message += ", dodati 'bijes' za napad iz bijesa";
+            if (hero is Mage) message += ", dodati broj za korištenje mane";
 
-        public static (ActionType action, bool doesQuit) GetRangerAction()
-        {
-            var input = ConsoleHelper.GetInputOrQuit("Odaberite napad (Direct, Side, Counter):");
+            var input = ConsoleHelper.GetInputOrQuit(message);
             if (input.doesQuit) return (0, true);
 
-            var actionInput = ConsoleHelper.CapitalizeWord(input.input.ToLower());
+            var inputList = input.input.Split(' ').ToList();
+            var actionInput = ConsoleHelper.CapitalizeWord(inputList[0]);
             var success = Enum.TryParse(actionInput, out ActionType action);
+
             if (!success)
             {
-                ConsoleHelper.ColorText("Odabir nije ispravan!", ConsoleColor.Yellow);
-                return GetRangerAction();
-            }
-            return ((ActionType)action, false);
-        }
-
-        public static (ActionType action, bool doesQuit) GetWarriorAction(Warrior warrior)
-        {
-            var userInput = ConsoleHelper.GetInputOrQuit("Odaberite napad (Direct, Side, Counter) + bijes:");
-            if (userInput.doesQuit) return (0, true);
-            var input = userInput.input.Split(' ').ToList();
-            var actionInput = ConsoleHelper.CapitalizeWord(input[0].ToLower());
-            var success = Enum.TryParse(actionInput, out ActionType action);
-            if (!success)
-            {
-                ConsoleHelper.ColorText("Odabir napada nije ispravan!", ConsoleColor.Yellow);
-                return GetWarriorAction(warrior);
-            }
-            warrior.IsAttackFurious = false;
-            if (success && input.Count == 1) return ((ActionType)action, false);
-            if (input.Count == 2 && input[1] == "bijes")
-            {
-                if (warrior.Health <= warrior.HealthPoints * 0.2)
-                {
-                    ConsoleHelper.ColorText("Health nije veći od 20% HP; napad iz bijesa nije moguć.", ConsoleColor.Yellow);
-                    return GetWarriorAction(warrior);
-                }
-
-                warrior.IsAttackFurious = true;
-                return ((ActionType)action, false);
+                ConsoleHelper.ColorText("Odabir akcije nije ispravan!", ConsoleColor.Yellow);
+                return GetAction(hero);
             }
 
-            ConsoleHelper.ColorText("Unos argumenata neispravan!", ConsoleColor.Yellow);
-            return GetWarriorAction(warrior);
-
-        }
-
-        public static (ActionType action, bool doesQuit) GetMageAction(Mage mage)
-        {
-            var userInput = ConsoleHelper.GetInputOrQuit("Odaberite napad (Direct, Side, Counter):");
-            if (userInput.doesQuit) return (0, true);
-            var input = userInput.input.Split(' ').ToList();
-            var actionInput = ConsoleHelper.CapitalizeWord(input[0].ToLower());
-            var success = Enum.TryParse(actionInput, out ActionType action);
-            if (!success)
+            if (inputList.Count == 1) return (action, false);
+            if (hero is Warrior warrior)
             {
-                ConsoleHelper.ColorText("Odabir napada nije ispravan!", ConsoleColor.Yellow);
-                return GetMageAction(mage);
+                if (inputList.Count == 2 && inputList[1] == "bijes")
+                {
+                    if (warrior.Health <= warrior.HealthPoints * 0.2)
+                    {
+                        ConsoleHelper.ColorText("Health nije veći od 20% HP; napad iz bijesa nije moguć.",
+                            ConsoleColor.Yellow);
+                        return GetAction(warrior);
+                    }
+
+                    warrior.IsAttackFurious = true;
+                    return (action, false);
+                }
             }
-            mage.ManaUsage = (false, -1);
-            if (success && input.Count == 1) return ((ActionType)action, false);
-            if (input.Count == 2)
+
+            if (hero is Mage mage)
             {
-                int mana;
-                var successInt = int.TryParse(input[1], out mana);
-                if (!successInt)
+                mage.ManaUsage = (false, -1);
+                if (inputList.Count() == 2)
                 {
-                    ConsoleHelper.ColorText("Mana mora biti broj!", ConsoleColor.Yellow);
-                    return GetMageAction(mage);
+                    var successInt = int.TryParse(inputList[1], out var mana);
+                    if (!successInt)
+                    {
+                        ConsoleHelper.ColorText("Mana mora biti broj!", ConsoleColor.Yellow);
+                        return GetAction(mage);
+                    }
+
+                    if (mana <= 0)
+                    {
+                        ConsoleHelper.ColorText("Mana mora biti veća od 0!", ConsoleColor.Yellow);
+                        return GetAction(mage);
+                    }
+
+                    if (mana > mage.Mana)
+                    {
+                        ConsoleHelper.ColorText("Tolika količina mane nije dostupna!", ConsoleColor.Yellow);
+                        return GetAction(mage);
+                    }
+
+                    mage.ManaUsage = (true, mana);
                 }
-                if (mana <= 0)
-                {
-                    ConsoleHelper.ColorText("Mana mora biti veća od 0!", ConsoleColor.Yellow);
-                    return GetMageAction(mage);
-                }
-                if (mana > mage.Mana)
-                {
-                    ConsoleHelper.ColorText("Tolika količina mane nije dostupna!", ConsoleColor.Yellow);
-                    return GetMageAction(mage);
-                }
-                mage.ManaUsage = (true, mana);
-                return ((ActionType)action, false);
             }
             ConsoleHelper.ColorText("Unos argumenata neispravan!", ConsoleColor.Yellow);
-            return GetMageAction(mage);
+            return GetAction(hero);
         }
 
         public static void Win(Hero hero, int experienceUp)
@@ -117,8 +91,9 @@ namespace DungeonCrawler.Domain.Helpers
             Console.WriteLine("Pobjeda runde!");
             if (hero is Mage mage) mage.Mana = mage.ManaPoints;
             hero.Experience += experienceUp;
+            var newHealth = (hero.Health > 0.75*hero.HealthPoints) ? hero.HealthPoints : (int)(hero.Health + hero.HealthPoints * 0.25);
             var doesRegenerate = ConsoleHelper.ConfirmAction(
-                $"Želite li utrošiti {hero.Experience / 2} XP za obnovu zdravlja? [XP: {hero.Experience}, Zdravlje: {hero.Health}/{hero.HealthPoints}]");
+                $"Želite li utrošiti {hero.Experience / 2} XP za obnovu zdravlja? [XP: {hero.Experience}, Zdravlje: {newHealth}/{hero.HealthPoints}]");
             if (hero.WinCheckLevelUp(doesRegenerate))
                     ConsoleHelper.ColorText("Level up!", ConsoleColor.White, ConsoleColor.DarkGreen);
         }
@@ -143,8 +118,5 @@ namespace DungeonCrawler.Domain.Helpers
             }
             Console.WriteLine("");
         }
-
-
-
     }
 }

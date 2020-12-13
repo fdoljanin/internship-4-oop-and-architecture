@@ -38,29 +38,25 @@ namespace DungeonCrawler.Domain.Helpers
         public static (int number, bool isDefault) GetNumber(string message)
         {
             Console.WriteLine(message);
-            int number;
             var inputString = Console.ReadLine().Trim();
             if (inputString == "") return (-1, true);
-            var success = int.TryParse(inputString, out number);
+            var success = int.TryParse(inputString, out var number);
             if (!success)
             {
                 ColorText("Unos mora biti broj!", ConsoleColor.Yellow);
                 return GetNumber(message);
             }
-            if (number <= 0)
-            {
-                ColorText("Unos mora biti veći od 0!", ConsoleColor.Yellow);
-                return GetNumber(message);
-            }
-            return (number, false);
 
+            if (number > 0) return (number, false);
+            ColorText("Unos mora biti veći od 0!", ConsoleColor.Yellow);
+            return GetNumber(message);
         }
 
         public static string CapitalizeWord(string word)
         {
             if (word.Length > 1)
                 return char.ToUpper(word[0]) + word.Substring(1);
-            else return "";
+            return "";
         }
 
         public static bool ConfirmAction(string message)
@@ -69,22 +65,16 @@ namespace DungeonCrawler.Domain.Helpers
             var input = Console.ReadLine().Trim().ToLower();
             if (input == "da") return true;
             if (input == "ne") return false;
-            else
-            {
-                ColorText("Neispravan odabir!", ConsoleColor.Yellow);
-                return ConfirmAction(message);
-            }
+            ColorText("Neispravan odabir!", ConsoleColor.Yellow);
+            return ConfirmAction(message);
         }
 
         public static (bool doesQuit, string input) GetInputOrQuit(string message)
         {
             var input = GetInput(message);
-            if (input == "quit")
-            {
-                if (!ConfirmAction("Jeste li sigurni da želite odustati?")) return GetInputOrQuit(message);
-                return (true, "");
-            }
-            return (false, input);
+            if (input != "quit") return (false, input);
+            if (!ConfirmAction("Jeste li sigurni da želite odustati?")) return GetInputOrQuit(message);
+            return (true, "");
         }
 
         

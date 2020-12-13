@@ -9,14 +9,10 @@ using DungeonCrawler.Domain.Helpers;
 
 namespace DungeonCrawler.Domain.Services
 {
-    enum MonsterType
-    {
-        Goblin, Brute, Witch
-    }
     public class Round
     {
-        public Monster Monster;
-        public Hero Hero;
+        private Monster Monster;
+        private Hero Hero;
         private bool _continue = true;
         private bool _quits = false;
         public Round(Hero inHero)
@@ -38,10 +34,18 @@ namespace DungeonCrawler.Domain.Services
                 case MonsterType.Witch:
                     Monster = new Witch();
                     break;
-                default:
-                    break;
             }
 
+        }
+
+        public bool HeroWins(ActionType heroOption, ActionType monsterOption)
+        {
+            if (heroOption == ActionType.Direct && monsterOption == ActionType.Side
+                || heroOption == ActionType.Side && monsterOption == ActionType.Counter
+                || heroOption == ActionType.Counter && monsterOption == ActionType.Direct)
+                return true;
+
+            return false;
         }
 
         public void Play(List <Round> rounds)
@@ -52,6 +56,7 @@ namespace DungeonCrawler.Domain.Services
                 HeroInteraction.Win(Hero, Monster.GetExperience());
                 return;
             }
+
             Console.WriteLine("NOVA RUNDA! \n");
             while (true)
             {
@@ -66,38 +71,33 @@ namespace DungeonCrawler.Domain.Services
 
                 var heroOption = heroInput.action;
                 var monsterOption = Monster.Action();
-                Console.WriteLine("Čudovište je odabralo: " + monsterOption);
+                Console.WriteLine("Monster je odabrao: " + monsterOption);
+
                 if (heroOption == monsterOption)
                 {
                     ConsoleHelper.ColorText("Odabrali ste istu akciju! \n", ConsoleColor.DarkGray);
                     continue;
                 }
-                if (heroOption == ActionType.Direct && monsterOption == ActionType.Side
-                    || heroOption == ActionType.Side && monsterOption == ActionType.Counter
-                    || heroOption == ActionType.Counter && monsterOption == ActionType.Direct)
+
+                if (HeroWins(heroOption, monsterOption))
                 {
-                    ConsoleHelper.ColorText("Hero pobijedio potez!\n", ConsoleColor.Green);
-                    if (Monster.Suffer(Hero.Attack()));
-                    else
+                    ConsoleHelper.ColorText($"{Hero.Name} pobijedi potez!\n", ConsoleColor.Green);
+                    if (Monster.SurviveSuffer(Hero.Attack())) continue;
+                    if (Monster is Witch)
                     {
-                        if (Monster is Witch)
-                        {
-                            new Round(Hero);
-                            new Round(Hero);
-                        }
-                        if (rounds.Count>1) HeroInteraction.Win(Hero,Monster.GetExperience());
-                        break;
+                        ConsoleHelper.ColorText("Stvorila se 2 nova monstera!", ConsoleColor.DarkRed);
+                        new Round(Hero);
+                        new Round(Hero);
                     }
+                    if (rounds.Count>1) HeroInteraction.Win(Hero,Monster.GetExperience());
+                    break;
                 }
                 else
                 {
-                    ConsoleHelper.ColorText("Monster pobijedio potez!\n", ConsoleColor.Red);
-                    if (Hero.Suffer(Monster.Attack()));
-                    else
-                    {
-                        _continue = false;
-                        break;
-                    }
+                    ConsoleHelper.ColorText("Monster pobijedi potez!\n", ConsoleColor.Red);
+                    if (Hero.SurviveSuffer(Monster.Attack())) continue;
+                    _continue = false;
+                     break;
                 }
             }
         }
