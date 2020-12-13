@@ -39,7 +39,7 @@ namespace DungeonCrawler.Domain.Services
 
             ConsoleHelper.ColorText("Za izlaz tijekom igre unesite quit \n", ConsoleColor.DarkRed);
             var rounds = new List<Round>();
-            for (var i = 0; i < 2; ++i) rounds.Add(new Round(hero));
+            for (var i = 0; i < 10; ++i) rounds.Add(new Round(hero));
 
             while (rounds.Count > 0)
             {
