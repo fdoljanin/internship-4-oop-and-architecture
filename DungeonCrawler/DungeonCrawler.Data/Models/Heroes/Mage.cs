@@ -40,6 +40,7 @@ namespace DungeonCrawler.Data.Models.Heroes
         protected override bool Die()
         {
             if (_hasDied) return false;
+            Console.WriteLine("Respawn...");
             _hasDied = true;
             Health = HealthPoints;
             Mana = ManaPoints;

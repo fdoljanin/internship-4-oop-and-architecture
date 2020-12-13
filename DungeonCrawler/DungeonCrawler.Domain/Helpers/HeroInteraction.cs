@@ -29,7 +29,7 @@ namespace DungeonCrawler.Domain.Helpers
             if (input.doesQuit) return (0, true);
 
             var inputList = input.input.Split(' ').ToList();
-            var actionInput = ConsoleHelper.CapitalizeWord(inputList[0]);
+            var actionInput = ConsoleHelper.CapitalizeWord(inputList[0].ToLower());
             var success = Enum.TryParse(actionInput, out ActionType action);
 
             if (!success)
@@ -41,7 +41,7 @@ namespace DungeonCrawler.Domain.Helpers
             if (inputList.Count == 1) return (action, false);
             if (hero is Warrior warrior)
             {
-                if (inputList.Count == 2 && inputList[1] == "bijes")
+                if (inputList.Count == 2 && inputList[1].ToLower() == "bijes")
                 {
                     if (warrior.Health <= warrior.HealthPoints * 0.2)
                     {
