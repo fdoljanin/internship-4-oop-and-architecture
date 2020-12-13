@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DungeonCrawler
+namespace DungeonCrawler.Data.Models.Heroes
 {
-    class Ranger:Hero
+    public class Ranger:Hero
     {
         public Ranger():base()
         {
@@ -20,7 +20,10 @@ namespace DungeonCrawler
             var rand = new Random();
             if (rand.Next(0, 100) < StunChance && Storage.EntityList.Count>=2) Storage.EntityList[2].Health = 0;
             if (rand.Next(0, 100) < CriticalChance)
+            {
+                Console.WriteLine("Double damage!");
                 return 2 * base.Attack();
+            }
             return base.Attack();
         }
     }

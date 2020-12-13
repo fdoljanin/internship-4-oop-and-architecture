@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DungeonCrawler.Data;
+using DungeonCrawler.Data.Models.Heroes;
+using DungeonCrawler.Domain.Helpers;
 
-namespace DungeonCrawler
+namespace DungeonCrawler.Domain.Services
 {
-    class Game
+    public class Game
     {
         HeroType GetHeroType(string message)
         {
             var input = ConsoleHelper.CapitalizeWord(ConsoleHelper.GetInput(message).ToLower());
-            var success = Enum.TryParse(typeof(HeroType), input, out object hero);
+            var success = Enum.TryParse( input, out HeroType hero);
             if (!success)
             {
                 ConsoleHelper.ColorText("Odabir nije ispravan!", ConsoleColor.Yellow);
@@ -27,7 +30,7 @@ namespace DungeonCrawler
             ConsoleHelper.ColorText("——— DUNGEON CRAWL ———", ConsoleColor.White, ConsoleColor.DarkBlue);
             var heroType = GetHeroType("Unesite tip heroja (Warrior/Mage/Ranger)");
             Hero hero = null;
-            Goblin monster = new Goblin();
+            //Goblin monster = new Goblin();
             switch (heroType)
             {
                 case HeroType.Warrior:

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DungeonCrawler.Data.Abstractions;
 
-namespace DungeonCrawler
+namespace DungeonCrawler.Data.Models.Heroes
 {
     public abstract class Hero:IEntityInfo
     {
@@ -55,13 +56,10 @@ namespace DungeonCrawler
                 Experience -= Experience / 2;
                 Health = HealthPoints;
             }
-            if (Experience >= ExperienceLevelUp)
-            {
-                Experience -= ExperienceLevelUp;
-                LevelUp();
-                return true;
-            }
-            return false;
+            if (Experience < ExperienceLevelUp) return false;
+            Experience -= ExperienceLevelUp;
+            LevelUp();
+            return true;
         }
     }
 }

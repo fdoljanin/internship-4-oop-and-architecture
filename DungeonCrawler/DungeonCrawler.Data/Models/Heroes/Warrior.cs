@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 
-namespace DungeonCrawler
+namespace DungeonCrawler.Data.Models.Heroes
 {
     public class Warrior : Hero
     {

@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DungeonCrawler
+namespace DungeonCrawler.Data.Models.Monsters
 {
-    class Witch:Monster
+    public class Witch:Monster
     {
         public Witch():base()
         {
             Name = "Witch";
             ExperienceDefined = 20;
-            HealthPoints = 35 + ConsoleHelper.RandomSeed.Next(0,8);
+            HealthPoints = 35 + new Random().Next(0,8);
             Health = HealthPoints;
-            Damage = 20 + ConsoleHelper.RandomSeed.Next(0, 3);
+            Damage = 20 + new Random().Next(0, 3);
         }
         public override int Attack()
         {

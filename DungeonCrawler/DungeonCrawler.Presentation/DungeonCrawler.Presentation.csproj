@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DungeonCrawler.Data\DungeonCrawler.Data.csproj" />
+    <ProjectReference Include="..\DungeonCrawler.Domain\DungeonCrawler.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

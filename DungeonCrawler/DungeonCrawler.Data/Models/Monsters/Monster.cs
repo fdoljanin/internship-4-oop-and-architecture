@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DungeonCrawler.Data.Abstractions;
+using DungeonCrawler.Data.Enums;
 
-namespace DungeonCrawler
+namespace DungeonCrawler.Data.Models.Monsters
 {
     public abstract class Monster:IEntityInfo
     {

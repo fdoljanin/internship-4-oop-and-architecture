@@ -4,7 +4,7 @@ using System.Text;
 using System.Linq;
 using ConsoleColor = System.ConsoleColor;
 
-namespace DungeonCrawler
+namespace DungeonCrawler.Data.Models.Heroes
 {
     public class Mage : Hero
     {

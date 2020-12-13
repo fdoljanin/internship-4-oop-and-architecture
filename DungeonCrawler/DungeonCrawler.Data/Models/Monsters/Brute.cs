@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DungeonCrawler
+namespace DungeonCrawler.Data.Models.Monsters
 {
-    class Brute:Monster
+    public class Brute:Monster
     {
         public Brute() : base()
         {
             Name = "Brute";
             ExperienceDefined = 20;
-            HealthPoints = 45 + ConsoleHelper.RandomSeed.Next(0, 5);
+            HealthPoints = 45 + new Random().Next(0, 5);
             Health = HealthPoints;
-            Damage = 19 + ConsoleHelper.RandomSeed.Next(0, 3);
+            Damage = 19 + new Random().Next(0, 3);
         }
 
         public int PercentDamageChance { get; set; } = 15;

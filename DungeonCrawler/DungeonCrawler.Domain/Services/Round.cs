@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DungeonCrawler.Data;
+using DungeonCrawler.Data.Enums;
+using DungeonCrawler.Data.Models.Heroes;
+using DungeonCrawler.Data.Models.Monsters;
+using DungeonCrawler.Domain.Helpers;
 
-namespace DungeonCrawler
+namespace DungeonCrawler.Domain.Services
 {
     enum MonsterType
     {
